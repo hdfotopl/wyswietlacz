@@ -1,0 +1,656 @@
+# Board: ESP32-C3 Super Mini (Generic)
+# Definition: definitions/boards/esp32-c3-supermini/manifest.yaml
+
+esphome:
+  name: wyswietlacz
+  friendly_name: Wyświetlacz
+
+esp32:
+  variant: esp32c3
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: Wyświetlacz Fallback Hotspot
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+
+# Pobieranie danych z Home Assistant
+text_sensor:
+  - platform: homeassistant
+    id: f1_session_type
+    entity_id: sensor.f1_current_session
+
+  - platform: homeassistant
+    id: f1_circuit_short_name
+    entity_id: sensor.f1_current_session
+    attribute: circuit_short_name
+
+  - platform: homeassistant
+    id: f1_leader_tla
+    entity_id: sensor.f1_race_leader_tla
+
+  - platform: homeassistant
+    id: f1_leader_color
+    entity_id: sensor.f1_race_leader_color
+
+  - platform: homeassistant
+    id: f1_1_pit
+    entity_id: sensor.f1_1_pit
+
+  - platform: homeassistant
+    id: f1_1_pit_kolor
+    entity_id: sensor.f1_1_pit_kolor
+    
+  - platform: homeassistant
+    id: f1_2_tla
+    entity_id: sensor.f1_2_pozycja
+
+  - platform: homeassistant
+    id: f1_2_color
+    entity_id: sensor.f1_2_kolor
+
+  - platform: homeassistant
+    id: f1_2_interval
+    entity_id: sensor.f1_2_interval
+
+  - platform: homeassistant
+    id: f1_2_pit
+    entity_id: sensor.f1_2_pit
+
+  - platform: homeassistant
+    id: f1_2_pit_kolor
+    entity_id: sensor.f1_2_pit_kolor
+    
+  - platform: homeassistant
+    id: f1_3_tla
+    entity_id: sensor.f1_3_pozycja
+
+  - platform: homeassistant
+    id: f1_3_color
+    entity_id: sensor.f1_3_kolor
+
+  - platform: homeassistant
+    id: f1_3_interval
+    entity_id: sensor.f1_3_interval    
+
+  - platform: homeassistant
+    id: f1_3_pit
+    entity_id: sensor.f1_3_pit
+
+  - platform: homeassistant
+    id: f1_3_pit_kolor
+    entity_id: sensor.f1_3_pit_kolor
+    
+  - platform: homeassistant
+    id: f1_4_tla
+    entity_id: sensor.f1_4_pozycja
+
+  - platform: homeassistant
+    id: f1_4_color
+    entity_id: sensor.f1_4_kolor
+
+  - platform: homeassistant
+    id: f1_4_interval
+    entity_id: sensor.f1_4_interval
+
+  - platform: homeassistant
+    id: f1_4_pit
+    entity_id: sensor.f1_4_pit
+
+  - platform: homeassistant
+    id: f1_4_pit_kolor
+    entity_id: sensor.f1_4_pit_kolor
+    
+  - platform: homeassistant
+    id: f1_5_tla
+    entity_id: sensor.f1_5_pozycja
+
+  - platform: homeassistant
+    id: f1_5_color
+    entity_id: sensor.f1_5_kolor
+
+  - platform: homeassistant
+    id: f1_5_interval
+    entity_id: sensor.f1_5_interval
+
+  - platform: homeassistant
+    id: f1_5_pit
+    entity_id: sensor.f1_5_pit
+
+  - platform: homeassistant
+    id: f1_5_pit_kolor
+    entity_id: sensor.f1_5_pit_kolor
+    
+  - platform: homeassistant
+    id: f1_6_tla
+    entity_id: sensor.f1_6_pozycja
+
+  - platform: homeassistant
+    id: f1_6_color
+    entity_id: sensor.f1_6_kolor
+
+  - platform: homeassistant
+    id: f1_6_interval
+    entity_id: sensor.f1_6_interval
+
+  - platform: homeassistant
+    id: f1_6_pit
+    entity_id: sensor.f1_6_pit
+
+  - platform: homeassistant
+    id: f1_6_pit_kolor
+    entity_id: sensor.f1_6_pit_kolor
+    
+  # Pobieranie statusu toru (CLEAR, YELLOW, VSC, SC, RED itp.)
+  - platform: homeassistant
+    id: f1_track_status
+    entity_id: sensor.f1_track_status
+
+# Konfiguracja sprzętowej magistrali SPI
+spi:
+  clk_pin: GPIO4
+  mosi_pin: GPIO3
+
+# Synchronizacja czasu z Home Assistant
+time:
+  - platform: homeassistant
+    id: home_time
+
+# Czcionki
+font:
+  - file: "gfonts://Roboto"
+    id: font_zegar
+    size: 68
+    glyphs: "0123456789:"
+
+  - file: "gfonts://Roboto"
+    id: font_f1
+    size: 20
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ĄĆĘŁŃÓŚŹŻąćęłńóśźż:-/,+. "
+
+  - file: "gfonts://Roboto"
+    id: font_f1_laps
+    size: 45
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ĄĆĘŁŃÓŚŹŻąćęłńóśźż:-/ "
+
+  - file: "gfonts://Roboto"
+    id: font_flag_status
+    size: 44
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZ "
+
+# Pobieranie danych o okrążeniach z Home Assistant
+sensor:
+  - platform: homeassistant
+    id: f1_current_lap
+    entity_id: sensor.f1_race_lap_count
+
+  - platform: homeassistant
+    id: f1_total_laps
+    entity_id: sensor.f1_race_lap_count
+    attribute: total_laps
+
+# Konfiguracja wyświetlacza GC9A01A przez MIPI SPI
+display:
+  - platform: mipi_spi
+    model: GC9A01A
+
+    cs_pin: GPIO1
+    dc_pin: GPIO10
+    reset_pin: GPIO0
+
+    rotation: 0°
+    invert_colors: true
+
+    color_depth: 16
+    data_rate: 20MHz
+    buffer_size: 25%
+
+    update_interval: 1s
+    lambda: |-
+      auto now = id(home_time).now();
+
+      if (!now.is_valid()) {
+        it.fill(Color(0, 0, 0));
+        return;
+      }
+
+      std::string session = id(f1_session_type).state;
+
+      if (session == "Race" || session == "Sprint Qualifying" || session == "Sprint" || session == "Qualifying") {
+        std::string track_status = id(f1_track_status).state;
+
+        // --- OBSŁUGA FLAG NA TORZE ---
+        if (track_status == "YELLOW" || track_status == "VSC" || track_status == "SC") {
+          // Cały ekran w kolorze żółtym, czarny napis na środku
+          it.fill(Color(255, 200, 0));
+          it.printf(
+            120, 120,
+            id(font_flag_status),
+            Color(0, 0, 0),
+            TextAlign::CENTER,
+            "%s",
+            track_status.c_str()
+          );
+
+        } else if (track_status == "RED") {
+          // Cały ekran w kolorze czerwonym, biały napis na środku
+          it.fill(Color(255, 0, 0));
+          it.printf(
+            120, 120,
+            id(font_flag_status),
+            Color(255, 255, 255),
+            TextAlign::CENTER,
+            "RED FLAG"
+          );
+
+        } else {
+          // --- TRYB STANDARDOWY (CLEAR / NORMALNY WYŚCIG) ---
+          it.fill(Color(0, 0, 0));
+
+        // Lider wyścigu w dynamicznym kolorze
+        std::string leader = id(f1_leader_tla).state;
+        std::string hex_color = id(f1_leader_color).state;
+
+        if (!leader.empty() && leader != "---") {
+          uint8_t r = 255, g = 255, b = 255;
+
+          // Parsowanie formatu HEX lub RGB [R, G, B]
+          if (hex_color.length() == 6) {
+            unsigned int hex_val = std::stoul(hex_color, nullptr, 16);
+            r = (hex_val >> 16) & 0xFF;
+            g = (hex_val >> 8) & 0xFF;
+            b = hex_val & 0xFF;
+          } else if (!hex_color.empty()) {
+            int tr = 255, tg = 255, tb = 255;
+            if (sscanf(hex_color.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+              r = tr; g = tg; b = tb;
+            }
+          }
+
+          it.printf(
+            30, 30,
+            id(font_f1),
+            Color(r, g, b),
+            TextAlign::LEFT,
+            "P1 %s",
+            leader.c_str()
+          );
+        }
+        // P1 opony
+        std::string opona_1 = id(f1_1_pit).state;
+        std::string kolor_opona_1 = id(f1_1_pit_kolor).state;
+
+        if (!opona_1.empty() && opona_1 != "---") {
+          uint8_t r = 255, g = 255, b = 255;
+
+          // Parsowanie formatu HEX lub RGB [R, G, B]
+          if (kolor_opona_1.length() == 6) {
+            unsigned int hex_val = std::stoul(kolor_opona_1, nullptr, 16);
+            r = (hex_val >> 16) & 0xFF;
+            g = (hex_val >> 8) & 0xFF;
+            b = hex_val & 0xFF;
+          } else if (!kolor_opona_1.empty()) {
+            int tr = 255, tg = 255, tb = 255;
+            if (sscanf(kolor_opona_1.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+              r = tr; g = tg; b = tb;
+            }
+          }
+
+          it.printf(
+            110, 30,
+            id(font_f1),
+            Color(r, g, b),
+            TextAlign::LEFT,
+            "%s",
+            opona_1.c_str()
+          );
+        }
+        it.printf(140, 30, id(font_f1), "Leader");
+
+          // Drugi zawodnik wyścigu w dynamicznym kolorze
+          std::string pozycja_2 = id(f1_2_tla).state;
+          std::string hex_color_2 = id(f1_2_color).state;
+
+          if (!pozycja_2.empty() && pozycja_2 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (hex_color_2.length() == 6) {
+              unsigned int hex_val = std::stoul(hex_color_2, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!hex_color_2.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(hex_color_2.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              30, 50,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "P2 %s",
+              pozycja_2.c_str()
+            );
+          }
+          // P2 opony
+          std::string opona_2 = id(f1_2_pit).state;
+          std::string kolor_opona_2 = id(f1_2_pit_kolor).state;
+
+          if (!opona_2.empty() && opona_2 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (kolor_opona_2.length() == 6) {
+              unsigned int hex_val = std::stoul(kolor_opona_2, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!kolor_opona_2.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(kolor_opona_2.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              110, 50,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "%s",
+              opona_2.c_str()
+            );
+          }
+          it.printf(140, 50, id(font_f1), "+ %s", id(f1_2_interval).state.c_str());
+
+          // Trzeci zawodnik wyścigu w dynamicznym kolorze
+          std::string pozycja_3 = id(f1_3_tla).state;
+          std::string hex_color_3 = id(f1_3_color).state;
+
+          if (!pozycja_3.empty() && pozycja_3 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (hex_color_3.length() == 6) {
+              unsigned int hex_val = std::stoul(hex_color_3, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!hex_color_3.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(hex_color_3.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              30, 70,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "P3 %s",
+              pozycja_3.c_str()
+            );
+          }
+          // P3 opony
+          std::string opona_3 = id(f1_3_pit).state;
+          std::string kolor_opona_3 = id(f1_3_pit_kolor).state;
+
+          if (!opona_3.empty() && opona_3 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (kolor_opona_3.length() == 6) {
+              unsigned int hex_val = std::stoul(kolor_opona_3, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!kolor_opona_3.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(kolor_opona_3.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              110, 70,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "%s",
+              opona_3.c_str()
+            );
+          }
+          it.printf(140, 70, id(font_f1), "+ %s", id(f1_3_interval).state.c_str());
+
+          // Czwarty zawodnik wyścigu w dynamicznym kolorze
+          std::string pozycja_4 = id(f1_4_tla).state;
+          std::string hex_color_4 = id(f1_4_color).state;
+
+          if (!pozycja_4.empty() && pozycja_4 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (hex_color_4.length() == 6) {
+              unsigned int hex_val = std::stoul(hex_color_4, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!hex_color_4.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(hex_color_4.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              30, 90,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "P4 %s",
+              pozycja_4.c_str()
+            );
+          }
+          // P4 opony
+          std::string opona_4 = id(f1_4_pit).state;
+          std::string kolor_opona_4 = id(f1_4_pit_kolor).state;
+
+          if (!opona_4.empty() && opona_4 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (kolor_opona_4.length() == 6) {
+              unsigned int hex_val = std::stoul(kolor_opona_4, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!kolor_opona_4.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(kolor_opona_4.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              110, 90,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "%s",
+              opona_4.c_str()
+            );
+          }
+          it.printf(140, 90, id(font_f1), "+ %s", id(f1_4_interval).state.c_str());
+
+          // Piaty zawodnik wyścigu w dynamicznym kolorze
+          std::string pozycja_5 = id(f1_5_tla).state;
+          std::string hex_color_5 = id(f1_5_color).state;
+
+          if (!pozycja_5.empty() && pozycja_5 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (hex_color_5.length() == 6) {
+              unsigned int hex_val = std::stoul(hex_color_5, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!hex_color_5.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(hex_color_5.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              30, 110,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "P5 %s",
+              pozycja_5.c_str()
+            );
+          }
+          // P5 opony
+          std::string opona_5 = id(f1_5_pit).state;
+          std::string kolor_opona_5 = id(f1_5_pit_kolor).state;
+
+          if (!opona_5.empty() && opona_5 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (kolor_opona_5.length() == 6) {
+              unsigned int hex_val = std::stoul(kolor_opona_5, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!kolor_opona_5.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(kolor_opona_5.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              110, 110,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "%s",
+              opona_5.c_str()
+            );
+          }
+          it.printf(140, 110, id(font_f1), "+ %s", id(f1_5_interval).state.c_str());
+
+          // Szosty zawodnik wyścigu w dynamicznym kolorze
+          std::string pozycja_6 = id(f1_6_tla).state;
+          std::string hex_color_6 = id(f1_6_color).state;
+
+          if (!pozycja_6.empty() && pozycja_6 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (hex_color_6.length() == 6) {
+              unsigned int hex_val = std::stoul(hex_color_6, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!hex_color_6.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(hex_color_6.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              30, 130,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "P6 %s",
+              pozycja_6.c_str()
+            );
+          }
+          // P6 opony
+          std::string opona_6 = id(f1_6_pit).state;
+          std::string kolor_opona_6 = id(f1_6_pit_kolor).state;
+
+          if (!opona_6.empty() && opona_6 != "---") {
+            uint8_t r = 255, g = 255, b = 255;
+
+            // Parsowanie formatu HEX lub RGB [R, G, B]
+            if (kolor_opona_6.length() == 6) {
+              unsigned int hex_val = std::stoul(kolor_opona_6, nullptr, 16);
+              r = (hex_val >> 16) & 0xFF;
+              g = (hex_val >> 8) & 0xFF;
+              b = hex_val & 0xFF;
+            } else if (!kolor_opona_6.empty()) {
+              int tr = 255, tg = 255, tb = 255;
+              if (sscanf(kolor_opona_6.c_str(), "[%d, %d, %d]", &tr, &tg, &tb) == 3) {
+                r = tr; g = tg; b = tb;
+              }
+            }
+
+            it.printf(
+              110, 130,
+              id(font_f1),
+              Color(r, g, b),
+              TextAlign::LEFT,
+              "%s",
+              opona_6.c_str()
+            );
+          }
+          it.printf(140, 130, id(font_f1), "+ %s", id(f1_6_interval).state.c_str());
+  
+          // Okrążenia
+          if (session == "Race" || session == "Sprint") {
+            int current_lap = (int) id(f1_current_lap).state;
+            int total_laps = (int) id(f1_total_laps).state;
+
+            if (total_laps > 0) {
+              it.printf(
+                120, 195,
+                id(font_f1_laps),
+                Color(255, 215, 0),
+                TextAlign::CENTER,
+                "%d/%d",
+                current_lap,
+                total_laps
+              );
+            }
+          }
+        }  
+
+      } else {
+        // --- TRYB ZEGARA (POZA WYŚCIGIEM) ---
+        it.fill(Color(0, 0, 0));
+        it.strftime(
+          120, 90,
+          id(font_zegar),
+          Color(255, 255, 255),
+          TextAlign::TOP_CENTER,
+          "%H:%M",
+          now
+        );
+      }
